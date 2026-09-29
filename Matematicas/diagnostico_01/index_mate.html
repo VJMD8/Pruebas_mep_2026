@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Misión 02 · El Reino de las Matemáticas</title>
+<style>
+:root{--ink:#28324a;--violet:#8061c8;--soft:#f4efff;--gold:#f3bd4f;--mint:#e8f8f2;--rose:#fff1f5;--bg1:#f5efff;--bg2:#fff9ef;--line:#e8e1f1}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(135deg,var(--bg1),var(--bg2));min-height:100vh}
+.wrap{max-width:820px;margin:auto;padding:28px 18px 60px}.card{background:#fff;border:1px solid #eee6f4;border-radius:28px;box-shadow:0 18px 45px rgba(55,35,90,.09);padding:34px}
+.kicker{font-weight:900;letter-spacing:.06em;color:var(--violet);text-transform:uppercase}.title{font-size:clamp(2rem,6vw,3.5rem);line-height:1.03;margin:12px 0}.lead{font-size:1.08rem;line-height:1.65}.chips{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}.chip{background:var(--soft);padding:9px 13px;border-radius:999px;font-weight:800;font-size:.92rem}
+button{font:inherit;border:0;border-radius:15px;padding:13px 18px;font-weight:900;cursor:pointer}.primary{background:var(--violet);color:white}.secondary{background:#f0edf5;color:var(--ink)}.ghost{background:white;border:1px solid var(--line)}
+.hidden{display:none!important}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}.progress{height:10px;background:#eee8f5;border-radius:999px;overflow:hidden;margin:8px 0 25px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--gold));transition:.25s}
+.realm{font-weight:900;color:var(--violet);font-size:.9rem}.qnum{font-weight:800;color:#6c7180}.question{font-size:1.35rem;font-weight:850;line-height:1.35;margin:12px 0 18px}.context{background:#faf8fd;border-left:5px solid var(--violet);padding:14px 16px;border-radius:14px;margin:10px 0 18px;line-height:1.55}.options{display:grid;gap:11px}.option{display:flex;gap:12px;align-items:flex-start;border:2px solid #eee9f4;border-radius:17px;padding:14px 15px;cursor:pointer;transition:.15s;background:#fff}.option:hover{border-color:#cdbfeb;background:#fbf9ff}.option.selected{border-color:var(--violet);background:var(--soft)}.badge{min-width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#eee8f7;font-weight:900}.nav{display:flex;justify-content:space-between;gap:10px;margin-top:25px}.nav .right{display:flex;gap:10px}
+.note{font-size:.92rem;color:#6f7380;line-height:1.5}.mini{font-size:.86rem}.visual{margin:15px auto;text-align:center}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.shape{height:75px;border:2px solid #6f6680;display:grid;place-items:center;border-radius:10px;background:#fff}.resultHero{text-align:center}.score{font-size:4.2rem;font-weight:950;color:var(--violet);line-height:1}.sub{font-size:1.15rem}.domains{display:grid;gap:12px;margin:25px 0}.domain{background:#faf9fc;border:1px solid var(--line);border-radius:16px;padding:14px}.domainHead{display:flex;justify-content:space-between;font-weight:900}.meter{height:8px;background:#ece8f0;border-radius:99px;overflow:hidden;margin-top:9px}.meter>i{display:block;height:100%;background:var(--violet)}.insight{background:var(--mint);border-radius:18px;padding:18px;margin:18px 0}.train{background:var(--rose);border-radius:18px;padding:18px;margin:18px 0}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+@media(max-width:600px){.card{padding:22px 18px;border-radius:22px}.question{font-size:1.18rem}.nav{flex-direction:column}.nav .right{width:100%}.nav button{flex:1}.grid{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:white}.wrap{max-width:none}.card{box-shadow:none;border:0}.actions,.nav,.progress,.top{display:none!important}}
+</style>
+</head>
+<body><main class="wrap">
+<section id="start" class="card">
+  <div class="kicker">🔮 Misión 02 · Matemáticas</div>
+  <h1 class="title">El Reino de las Matemáticas</h1>
+  <p class="lead">Cinco cristales sostienen el equilibrio del reino. Esta misión no busca que lo sepas todo: nos ayudará a descubrir los poderes matemáticos que ya dominas y cuáles vamos a entrenar antes del gran desafío.</p>
+  <div class="chips"><span class="chip">35 desafíos</span><span class="chip">Sin cronómetro visible</span><span class="chip">Una pregunta a la vez</span><span class="chip">Puedes regresar</span></div>
+  <p class="lead">🌸 Lee con calma. 🧠 Puedes usar papel para pensar. ✨ Si dudas, elige la opción que te parezca mejor y continúa.</p>
+  <button class="primary" onclick="startMission()">ABRIR EL REINO ✨</button>
+</section>
+
+<section id="quiz" class="card hidden">
+ <div class="top"><div><div class="realm" id="realm"></div><div class="qnum" id="qnum"></div></div><div class="mini" id="answered"></div></div>
+ <div class="progress"><div class="bar" id="bar"></div></div>
+ <div id="context" class="context hidden"></div>
+ <div id="visual" class="visual hidden"></div>
+ <div class="question" id="question"></div>
+ <div class="options" id="options"></div>
+ <div class="nav"><button class="secondary" id="prev" onclick="move(-1)">← Anterior</button><div class="right"><button class="ghost" onclick="goUnanswered()">Pendientes</button><button class="primary" id="next" onclick="move(1)">Siguiente →</button></div></div>
+</section>
+
+<section id="result" class="card hidden">
+ <div class="resultHero"><div class="kicker">✨ Misión completada</div><h1 class="title">Los cristales han revelado tus poderes</h1><div class="score" id="score"></div><div class="sub" id="scoreText"></div></div>
+ <div class="domains" id="domains"></div>
+ <div class="insight"><b>🌟 Poderes que ya están brillando</b><div id="strengths"></div></div>
+ <div class="train"><b>🌱 Poderes que vamos a entrenar</b><div id="training"></div></div>
+ <p class="note">Este resultado es diagnóstico: sirve para decidir qué practicar. No es una nota escolar ni una etiqueta sobre tu capacidad.</p>
+ <div class="actions"><button class="primary" onclick="downloadResults()">Guardar resultado 📥</button><button class="secondary" onclick="window.print()">Imprimir / PDF</button></div>
+</section>
+</main>
+<script>
+const Q=[
+// NUMEROS 11
+{d:'Números',s:'Representación de números',c:'En el observatorio del Reino se registró una distancia de un millón cuatrocientos veinticinco mil metros.',q:'¿Cuál es la representación numérica correcta?',o:['1 425 000','1 400 025','1 042 500','1 425'],a:0},
+{d:'Números',s:'Comparación de decimales',c:'En una carrera de escobas mágicas, cuatro participantes tardaron 53,07 s; 53,70 s; 54,15 s y 54,80 s.',q:'¿Cuál lista está ordenada de menor a mayor?',o:['54,80; 54,15; 53,70; 53,07','53,07; 53,70; 54,15; 54,80','53,70; 53,07; 54,80; 54,15','53,07; 54,15; 53,70; 54,80'],a:1},
+{d:'Números',s:'Notación desarrollada',q:'¿Qué número representa 3 × 1000 + 5 × 100 + 2 × 10 + 7?',o:['3 257','3 527','3 507','35 027'],a:1},
+{d:'Números',s:'Divisibilidad',c:'Cuatro cofres contienen 248, 315, 422 y 637 gemas.',q:'¿Cuál cantidad es divisible entre 5?',o:['248','315','422','637'],a:1},
+{d:'Números',s:'Números primos y compuestos',q:'¿Cuál de estos números es compuesto?',o:['11','13','15','19'],a:2},
+{d:'Números',s:'Operaciones con decimales',c:'Un equipo de voleibol llevó 7,9 L de agua, luego agregó 6,5 L, 7,3 L y 6,2 L.',q:'¿Cuántos litros llevaron en total?',o:['26,9 L','27,0 L','27,9 L','28,9 L'],a:2},
+{d:'Números',s:'Fracciones mayores que la unidad',q:'¿Cuál fracción representa una cantidad mayor que 1?',o:['3/5','5/6','7/8','3/2'],a:3},
+{d:'Números',s:'Fracciones en intervalos',q:'¿Cuál fracción está entre 2 y 3?',o:['2/5','3/2','5/2','7/2'],a:2},
+{d:'Números',s:'Redondeo',c:'Una poción pesa 10,6184 g.',q:'Redondeada a la centésima más cercana, ¿cuánto pesa?',o:['10,60 g','10,61 g','10,62 g','10,70 g'],a:2},
+{d:'Números',s:'Operaciones combinadas',c:'Para un torneo se compran 10 botellas a ₡120 y 12 barras energéticas a ₡280.',q:'¿Qué expresión permite calcular el costo total?',o:['10×(120+12)×280','(10+12)×(120+280)','(10×120)+(12×280)','(10+280)×(12+120)'],a:2},
+{d:'Números',s:'Divisores',c:'81 cristales se reparten en bolsas con la misma cantidad, sin que sobre ninguno.',q:'¿Cuál podría ser la cantidad de cristales por bolsa?',o:['2','3','5','10'],a:1},
+// GEOMETRIA 9
+{d:'Geometría',s:'Figuras planas',q:'¿Cuál figura siempre tiene cuatro ángulos rectos?',o:['Trapecio','Rectángulo','Triángulo','Pentágono'],a:1},
+{d:'Geometría',s:'Cuerpos sólidos',q:'Una caja de zapatos tiene forma de…',o:['Cilindro','Esfera','Prisma rectangular','Pirámide'],a:2},
+{d:'Geometría',s:'Perímetro',c:'Una bandera rectangular mide 100 cm de largo y 50 cm de ancho.',q:'¿Cuánto mide su perímetro?',o:['150 cm','300 cm','500 cm','5000 cm'],a:1},
+{d:'Geometría',s:'Área',c:'El piso cuadrado de una sala del castillo mide 5 m por lado.',q:'¿Cuál es su área?',o:['10 m²','20 m²','25 m²','5 m²'],a:2},
+{d:'Geometría',s:'Simetría',q:'¿Cuántos ejes de simetría tiene un rectángulo que no es cuadrado?',o:['1','2','3','4'],a:1},
+{d:'Geometría',s:'Coordenadas y desplazamiento',c:'Una exploradora está en (2,2). Camina 3 unidades al este y 2 al norte.',q:'¿A qué punto llega?',o:['(5,4)','(4,5)','(1,4)','(5,0)'],a:0},
+{d:'Geometría',s:'Polígonos',q:'¿Cuál de estas figuras NO es un polígono?',o:['Triángulo','Hexágono','Círculo','Rectángulo'],a:2},
+{d:'Geometría',s:'Clasificación de cuadriláteros',q:'¿Qué característica define a un trapecio en el enfoque escolar usual?',o:['Tiene tres lados','Tiene al menos un par de lados paralelos','Todos sus lados son iguales','No tiene vértices'],a:1},
+{d:'Geometría',s:'Área desde perímetro',c:'Una mesa cuadrada tiene un perímetro de 12 m.',q:'¿Cuál es el área de su superficie?',o:['3 m²','6 m²','9 m²','12 m²'],a:2},
+// MEDIDAS 5
+{d:'Medidas',s:'Conversión masa',q:'Un gato pesa 3600 g. ¿Cuántos kilogramos son?',o:['0,36 kg','3,6 kg','36 kg','360 kg'],a:1},
+{d:'Medidas',s:'Sistema monetario',c:'Un viaje cuesta ₡580.',q:'¿Cuál combinación paga exactamente ese monto?',o:['5×₡100 + 1×₡50 + 3×₡10','4×₡100 + 3×₡50 + 3×₡10','3×₡100 + 4×₡50 + 5×₡10','2×₡100 + 7×₡50 + 2×₡10'],a:1},
+{d:'Medidas',s:'Conversión longitud',q:'42,195 km equivalen a…',o:['4 219,5 m','42 195 m','421 950 m','421,95 m'],a:1},
+{d:'Medidas',s:'Conversión de tiempo',c:'Compara estas edades: 24 meses, 365 días, 4 años y 14 meses.',q:'¿Cuál es la menor?',o:['24 meses','365 días','4 años','14 meses'],a:1},
+{d:'Medidas',s:'Masa y dinero',c:'Se compran 2500 g de pollo. Cada kilogramo cuesta ₡2500.',q:'¿Cuánto se debe pagar?',o:['₡2500','₡5000','₡6250','₡7500'],a:2},
+// ALGEBRA 7
+{d:'Relaciones y Álgebra',s:'Patrones',c:'Los puestos de hidratación están a 4000, 8000, 12 000, 16 000, 20 000 y 24 000 m.',q:'Si continúa el patrón, ¿a qué distancia está el puesto 8?',o:['28 000 m','32 000 m','36 000 m','40 000 m'],a:1},
+{d:'Relaciones y Álgebra',s:'Variable y constante',c:'Una obra dura entre 120 y 130 minutos. La entrada cuesta siempre ₡2000.',q:'¿Cuál cantidad es variable?',o:['El precio de la entrada','La duración de la obra','El número 2000','Ninguna'],a:1},
+{d:'Relaciones y Álgebra',s:'Porcentajes',c:'A un entrenamiento asistieron 50 personas: 40 jugadoras y 10 jugadores.',q:'¿Qué porcentaje representan los 10 jugadores?',o:['10 %','20 %','40 %','80 %'],a:1},
+{d:'Relaciones y Álgebra',s:'Valor desconocido',q:'Si 20 + n = 60, ¿cuánto vale n?',o:['3','40','80','1200'],a:1},
+{d:'Relaciones y Álgebra',s:'Proporcionalidad directa',c:'Una fuente mágica llena 15 L cada 3 minutos.',q:'¿Cuánto tardará en llenar 45 L al mismo ritmo?',o:['6 min','9 min','12 min','30 min'],a:1},
+{d:'Relaciones y Álgebra',s:'Patrones no lineales',c:'Una colección crece así: 50, 101, 203, 407, 815, 1631…',q:'¿Cuál es el siguiente número?',o:['3261','3262','3263','3264'],a:2},
+{d:'Relaciones y Álgebra',s:'Ecuación multiplicativa',q:'Si 30 × n = 360, ¿cuánto vale n?',o:['12','30','330','390'],a:0},
+// ESTADISTICA 3
+{d:'Estadística y Probabilidad',s:'Moda',c:'Los tiempos de siete carreras fueron: 6,93; 6,17; 6,02; 6,85; 6,90; 7,02; 6,93 segundos.',q:'¿Cuál es la moda?',o:['6,02','6,85','6,93','7,02'],a:2},
+{d:'Estadística y Probabilidad',s:'Muestra y población',c:'En una escuela hay 1000 estudiantes. Se seleccionan al azar 200 para una encuesta.',q:'¿Cuál es la muestra?',o:['Los 1000 estudiantes','Los 200 estudiantes encuestados','Las preguntas de la encuesta','Las horas de estudio'],a:1},
+{d:'Estadística y Probabilidad',s:'Probabilidad',c:'Se lanza un dado común de seis caras una vez.',q:'¿Cuál evento es imposible?',o:['Obtener un número par','Obtener un 5','Obtener un número menor que 7','Obtener un 8'],a:3}
+];
+const realmIcon={'Números':'🔢','Geometría':'📐','Medidas':'📏','Relaciones y Álgebra':'🧩','Estadística y Probabilidad':'🎲'};
+let i=0, ans=Array(Q.length).fill(null), startedAt=null;
+function startMission(){startedAt=new Date();document.getElementById('start').classList.add('hidden');document.getElementById('quiz').classList.remove('hidden');render()}
+function render(){const x=Q[i];realm.textContent=`${realmIcon[x.d]} Cristal de ${x.d}`;qnum.textContent=`Desafío ${i+1} de ${Q.length}`;answered.textContent=`${ans.filter(v=>v!==null).length} respondidos`;bar.style.width=`${((i+1)/Q.length)*100}%`;question.textContent=x.q;context.textContent=x.c||'';context.classList.toggle('hidden',!x.c);visual.classList.add('hidden');options.innerHTML='';x.o.forEach((t,j)=>{let el=document.createElement('div');el.className='option'+(ans[i]===j?' selected':'');el.onclick=()=>{ans[i]=j;render()};el.innerHTML=`<span class="badge">${String.fromCharCode(65+j)}</span><span>${t}</span>`;options.appendChild(el)});prev.disabled=i===0;next.textContent=i===Q.length-1?'Terminar misión ✨':'Siguiente →'}
+function move(d){if(d===1&&i===Q.length-1){finish();return} i=Math.max(0,Math.min(Q.length-1,i+d));render();window.scrollTo({top:0,behavior:'smooth'})}
+function goUnanswered(){let n=ans.findIndex((v,idx)=>v===null&&idx!==i);if(n<0)n=ans.findIndex(v=>v===null);if(n>=0){i=n;render()}else alert('¡Has respondido todos los desafíos! ✨')}
+function calc(){let total=0, domains={};Q.forEach((x,k)=>{if(!domains[x.d])domains[x.d]={ok:0,n:0,skills:[]};domains[x.d].n++;let ok=ans[k]===x.a;if(ok){total++;domains[x.d].ok++}domains[x.d].skills.push({skill:x.s,ok})});return{total,domains}}
+function finish(){if(ans.some(v=>v===null)){let left=ans.filter(v=>v===null).length;if(!confirm(`Aún quedan ${left} desafíos sin responder. ¿Quieres terminar de todos modos?`))return}document.getElementById('quiz').classList.add('hidden');document.getElementById('result').classList.remove('hidden');let r=calc(),pct=Math.round(r.total/Q.length*100);score.textContent=`${r.total}/${Q.length}`;scoreText.textContent=`${pct}% · Un mapa para saber qué fortalecer`;
+ domains.innerHTML='';Object.entries(r.domains).forEach(([d,v])=>{let p=Math.round(v.ok/v.n*100);domains.innerHTML+=`<div class="domain"><div class="domainHead"><span>${realmIcon[d]} ${d}</span><span>${v.ok}/${v.n} · ${p}%</span></div><div class="meter"><i style="width:${p}%"></i></div></div>`});
+ let strengths=[],train=[];Object.values(r.domains).flatMap(v=>v.skills).forEach(s=>(s.ok?strengths:train).push(s.skill));strengths=[...new Set(strengths)].slice(0,6);train=[...new Set(train)].slice(0,8);document.getElementById('strengths').innerHTML=strengths.length?'<ul>'+strengths.map(x=>`<li>${x}</li>`).join('')+'</ul>':'<p>La misión fue difícil hoy; eso nos da un excelente punto de partida.</p>';document.getElementById('training').innerHTML=train.length?'<ul>'+train.map(x=>`<li>${x}</li>`).join('')+'</ul>':'<p>¡Todos los poderes evaluados aparecieron sólidos en esta misión!</p>';window.scrollTo({top:0,behavior:'smooth'})}
+function downloadResults(){let r=calc(),end=new Date(),pct=Math.round(r.total/Q.length*100);let lines=[];lines.push('MISIÓN 02 · EL REINO DE LAS MATEMÁTICAS','Diagnóstico de preparación · Sexto grado','',`Fecha: ${end.toLocaleString('es-CR')}`,`Resultado global: ${r.total}/${Q.length} (${pct}%)`,'','RESULTADO POR ÁREA');Object.entries(r.domains).forEach(([d,v])=>lines.push(`${d}: ${v.ok}/${v.n} (${Math.round(v.ok/v.n*100)}%)`));lines.push('','DETALLE DIAGNÓSTICO');Q.forEach((x,k)=>lines.push(`${k+1}. [${x.d}] ${x.s} | Respuesta: ${ans[k]===null?'Sin responder':String.fromCharCode(65+ans[k])} | Correcta: ${String.fromCharCode(65+x.a)} | ${ans[k]===x.a?'ACIERTO':'POR ENTRENAR'}`));lines.push('','Nota: Este instrumento es diagnóstico y se utiliza para diseñar una ruta de práctica individual.');let blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='resultado_mision_02_matematicas.txt';a.click();URL.revokeObjectURL(a.href)}
+</script></body></html>
