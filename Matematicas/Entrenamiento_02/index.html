@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Liga de los Cuatro Poderes</title>
+<style>
+:root{--ink:#29264d;--violet:#6d52bd;--paper:#fffaf2;--gold:#f3bb43}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);
+background:linear-gradient(#9bd9ff,#d9c9ff 48%,#292744);min-height:100vh}
+.w{max-width:850px;margin:auto;padding:14px}.p{background:rgba(255,250,242,.98);border:3px solid #fff;
+border-radius:24px;padding:22px;margin:14px 0;box-shadow:0 12px 28px #29264d33}
+.hero{text-align:center}h1,h2{color:#55419a}.icons{font-size:42px}.tag{display:inline-block;background:#eee8ff;
+border-radius:99px;padding:7px 13px;font-weight:800}.q{font-size:21px;font-weight:800;margin:17px 0}
+.story{background:#f1ecff;border-left:6px solid var(--violet);padding:13px;border-radius:14px;margin:12px 0}
+.tip{background:#fff0bd;padding:12px;border-radius:14px;margin:12px 0}.opts{display:grid;gap:9px}
+.op{padding:13px;background:white;border:2px solid #ddd7ef;border-radius:14px;cursor:pointer}
+.op:has(input:checked){border-color:var(--violet);background:#f0ebff}.op input{transform:scale(1.2);margin-right:9px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+button{border:0;border-radius:16px;padding:13px 18px;font-size:16px;font-weight:800;cursor:pointer}
+.go{background:var(--violet);color:#fff}.back{background:#ebe7f4;color:var(--ink)}
+.hide{display:none}.prog{height:11px;background:#e7e2ef;border-radius:20px;overflow:hidden}.bar{height:100%;background:var(--violet)}
+.small{font-size:14px;opacity:.75}.power{background:#fff;border-radius:14px;padding:12px;margin:8px 0;text-align:left}
+@media(max-width:600px){.p{padding:16px}.q{font-size:19px}}
+</style></head>
+<body><main class="w">
+<section class="p hero" id="intro">
+<div class="icons">⚔️ ➗ 🏐 🐈‍⬛</div>
+<h1>La Liga de los Cuatro Poderes</h1>
+<span class="tag">Entrenamiento 02 · Matemáticas</span>
+<p>Los poderes que despertaste necesitan una pequeña misión para demostrar que ya pueden trabajar juntos.</p>
+<p><b>No es una prueba y no hay nota.</b> Son 10 retos cortos. Lee con calma y confía en lo que sabes. 💜</p>
+<div class="tip"><b>🔎 Tu brújula:</b><br>¿Qué me cuentan? → ¿Qué me preguntan? → ¿Qué datos necesito? → ¿Qué puedo hacer?</div>
+<button class="go" onclick="start()">Comenzar misión ✨</button>
+</section>
+
+<section class="p hide" id="game">
+<div class="prog"><div class="bar" id="bar"></div></div><p class="small" id="step"></p>
+<div id="box"></div>
+<div class="nav"><button class="back" id="prev" onclick="back()">← Anterior</button>
+<button class="go" id="nextBtn" onclick="forward()">Siguiente →</button></div>
+</section>
+
+<section class="p hero hide" id="end">
+<div class="icons">🌟🐈‍⬛🏰</div><h2>¡Misión completada!</h2>
+<p>Acabas de usar varios poderes matemáticos en situaciones diferentes.</p>
+<div id="powers"></div>
+<p><b>No necesitas hacerlo todo perfecto para estar avanzando.</b><br>Cada reto ayuda a que tus conocimientos despierten un poquito más. 💜</p>
+<button class="go" onclick="save()">Guardar mensaje para Shai ✨</button>
+<p class="small">Entrégale el archivo a papá para que Shai prepare la siguiente aventura.</p>
+</section>
+</main>
+
+<script>
+const Q=[
+{t:"Fracciones",s:"fracción mayor que 1",n:"clara",story:"🎴 En una misión, una heroína necesita más de una botella de poción.",q:"¿Cuál cantidad representa más de una botella?",a:["3/4","4/4","5/4","2/5"],k:2},
+{t:"Fracciones",s:"ubicación de fracción",n:"aplicacion",story:"🏰 Para abrir una puerta debes ubicar correctamente 9/4.",q:"¿Entre cuáles números enteros se encuentra 9/4?",a:["0 y 1","1 y 2","2 y 3","3 y 4"],k:2},
+{t:"Porcentajes",s:"50 por ciento",n:"clara",story:"🏐 Un equipo practica 30 saques. Naiomy logra completar correctamente el 50%.",q:"¿Cuántos saques completó correctamente?",a:["10","15","20","25"],k:1},
+{t:"Porcentajes",s:"10 por ciento",n:"aplicacion",story:"🎟️ Una entrada cuesta ₡8 000 y tiene un descuento del 10%.",q:"¿Cuánto dinero corresponde al descuento?",a:["₡80","₡800","₡4 000","₡7 200"],k:1},
+{t:"Proporcionalidad",s:"proporción directa",n:"aplicacion",story:"🧪 Para un experimento se usan 3 vasos de agua para preparar 1 mezcla.",q:"Si se preparan 2 mezclas iguales, ¿cuántos vasos de agua se necesitan?",a:["3","5","6","9"],k:2},
+{t:"Medidas",s:"longitud",n:"clara",story:"🐈‍⬛ El gato negro recorre un pasillo de 4 metros.",q:"¿Cuántos centímetros son 4 metros?",a:["40 cm","400 cm","4 000 cm","40 000 cm"],k:1},
+{t:"Medidas",s:"tiempo",n:"aplicacion",story:"🎬 Una aventura dura 1 hora y 30 minutos.",q:"¿Cuántos minutos dura en total?",a:["60","80","90","130"],k:2},
+{t:"Medidas",s:"masa",n:"aplicacion",story:"🧺 Una caja tiene una masa de 3 kg.",q:"¿Cuántos gramos representa esa masa?",a:["30 g","300 g","3 000 g","30 000 g"],k:2},
+{t:"Problemas",s:"dos operaciones",n:"gradual",story:"⚔️ En un torneo hay 4 equipos. Cada equipo tiene 6 jugadores. Al final se forman grupos de 3 jugadores para una actividad.",q:"¿Cuántos grupos de 3 se pueden formar con todos los jugadores?",a:["6","8","10","24"],k:1},
+{t:"Problemas",s:"conversión dentro de problema",n:"tipo_mep_gradual",story:"🏃 En un recorrido de 3 km, una estudiante ya avanzó 1 750 m.",q:"¿Cuántos metros le faltan para completar el recorrido?",a:["250 m","1 250 m","1 750 m","4 750 m"],k:1}
+];
+
+let i=0,R={},T,report;
+function start(){T=Date.now();intro.classList.add("hide");game.classList.remove("hide");render()}
+function render(){
+ let z=Q[i]; step.textContent=`Reto ${i+1} de ${Q.length}`;bar.style.width=((i+1)/Q.length*100)+"%";
+ box.innerHTML=`<span class="tag">${z.t}</span><div class="story">${z.story}</div><div class="q">${z.q}</div>
+ <div class="opts">${z.a.map((x,j)=>`<label class="op"><input type="radio" name="r" ${R[i]===j?"checked":""}
+ onchange="R[${i}]=${j}">${x}</label>`).join("")}</div>`;
+ prev.style.visibility=i?"visible":"hidden";nextBtn.textContent=i===Q.length-1?"Terminar misión ✨":"Siguiente →";
+}
+function forward(){
+ if(R[i]===undefined){alert("Elige la respuesta que te parezca mejor. Si dudas, usa tu brújula y confía en tu razonamiento 💜");return}
+ if(i<Q.length-1){i++;render()}else finish()
+}
+function back(){if(i){i--;render()}}
+function finish(){
+ let d=Q.map((z,j)=>({reto:j+1,tema:z.t,habilidad:z.s,nivel_consiga:z.n,pregunta:z.q,
+ respuesta:z.a[R[j]],clave:z.a[z.k],correcta:R[j]===z.k}));
+ let temas={};d.forEach(x=>{temas[x.tema]??={correctas:0,total:0};temas[x.tema].total++;if(x.correcta)temas[x.tema].correctas++});
+ report={fecha:new Date().toLocaleString("es-CR"),mision:"Matemáticas - La Liga de los Cuatro Poderes",
+ tipo:"entrenamiento_aplicacion_sin_nota",duracion_min:Math.round((Date.now()-T)/60000),temas,detalle:d};
+ game.classList.add("hide");end.classList.remove("hide");
+ powers.innerHTML=Object.entries(temas).map(([t,v])=>`<div class="power">✨ <b>${t}</b><br>${
+ v.correctas===v.total?"Poder en acción 🌟":v.correctas>=v.total/2?"Cada vez más fuerte 💜":"Este poder merece otro entrenamiento 🧩"
+ }</div>`).join("");
+}
+function save(){
+ let b=new Blob([JSON.stringify(report,null,2)],{type:"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(b);a.download="resultado_entrenamiento_mate_02.json";a.click()
+}
+</script></body></html>
