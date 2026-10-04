@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El Portal del Tiempo - Estudios Sociales</title>
+<style>
+:root{--ink:#27324a;--blue:#477bb8;--gold:#d9a52e;--paper:#fffaf0}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);
+background:linear-gradient(#8fd0ee,#c6dfc3 48%,#80664a);min-height:100vh}
+.w{max-width:850px;margin:auto;padding:14px}.p{background:rgba(255,250,240,.98);border:3px solid #fff;border-radius:24px;
+padding:22px;margin:14px 0;box-shadow:0 12px 28px #26384c33}.hero{text-align:center}h1,h2{color:#315f91}
+.icons{font-size:42px}.tag{display:inline-block;background:#e3f0fb;border-radius:99px;padding:7px 13px;font-weight:800}
+.story{background:#eaf5ec;border-left:6px solid #548b63;padding:14px;border-radius:14px;margin:12px 0}
+.memory{background:#fff0bd;border-left:6px solid var(--gold);padding:14px;border-radius:14px;margin:12px 0}
+.q{font-size:21px;font-weight:800;margin:16px 0}.opts{display:grid;gap:9px}.op{padding:13px;background:#fff;border:2px solid #d8dfdf;border-radius:14px}
+.op:has(input:checked){border-color:var(--blue);background:#eaf3ff}.op input{transform:scale(1.2);margin-right:9px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}button{border:0;border-radius:16px;padding:13px 18px;font-weight:800;font-size:16px;cursor:pointer}
+.go{background:#477bb8;color:white}.back{background:#e9edf0}.hide{display:none}.prog{height:11px;background:#e1e6e8;border-radius:20px;overflow:hidden}
+.bar{height:100%;background:#477bb8}.small{font-size:14px;opacity:.75}.power{background:#fff;border-radius:14px;padding:12px;margin:8px 0;text-align:left}
+@media(max-width:600px){.p{padding:16px}.q{font-size:19px}}
+</style></head>
+<body><main class="w">
+<section class="p hero" id="intro"><div class="icons">🌎 ⏳ 🏰 🐈‍⬛</div><h1>El Portal del Tiempo</h1>
+<span class="tag">Entrenamiento 01 · Estudios Sociales</span>
+<p>Hoy viajarás por paisajes, comunidades y momentos de la historia de Costa Rica.</p>
+<p>En algunos portales encontrarás una <b>pista para despertar el recuerdo</b> y en otros usarás lo que ya sabes. <b>No hay nota.</b> 🌿</p>
+<button class="go" onclick="start()">Abrir el portal ✨</button></section>
+
+<section class="p hide" id="game"><div class="prog"><div class="bar" id="bar"></div></div><p class="small" id="step"></p>
+<div id="box"></div><div class="nav"><button class="back" id="prev" onclick="back()">← Anterior</button>
+<button class="go" id="nextBtn" onclick="forward()">Siguiente →</button></div></section>
+
+<section class="p hero hide" id="end"><div class="icons">🌎🌟🐈‍⬛</div><h2>¡Regresaste del viaje!</h2>
+<p>Hoy recuperaste recuerdos de geografía, comunidad e historia. No buscábamos una calificación: <b>estábamos entrenando tu memoria y tu confianza.</b></p>
+<div id="powers"></div><p><b>Lo que parecía lejano puede volver a sentirse conocido.</b> 💜</p>
+<button class="go" onclick="save()">Guardar mensaje para Shai ✨</button>
+<p class="small">Entrégale el archivo a papá para preparar la siguiente misión.</p></section>
+</main>
+<script>
+const A=[
+{l:1,t:"Geografía",h:"🗺️ Portal 1: Lee el paisaje",x:"Una <b>llanura</b> es un terreno amplio y bastante plano. Un <b>valle</b> es una zona baja entre montañas o elevaciones. Una <b>cordillera</b> es un conjunto de montañas enlazadas.",e:"Imagina: mesa = llanura · espacio entre montañas = valle · cadena de montañas = cordillera."},
+{t:"Geografía",s:"relieve-llanura",n:"guiado",story:"🧭 Llegas a una región extensa, casi plana y con pocas elevaciones.",q:"¿Qué forma de relieve describe mejor ese paisaje?",a:["Valle","Llanura","Cordillera","Volcán"],k:1},
+{t:"Geografía",s:"relieve-valle",n:"aplicacion",story:"🏞️ Un poblado se encuentra en una zona baja entre montañas.",q:"¿En qué forma de relieve está ubicado?",a:["Llanura","Costa","Valle","Cordillera"],k:2},
+{t:"Geografía",s:"relieve-cordillera",n:"aplicacion",story:"⛰️ Desde el portal observas varias montañas unidas que forman una larga cadena.",q:"¿Cómo se llama ese conjunto?",a:["Cordillera","Valle","Llanura","Isla"],k:0},
+
+{l:1,t:"Gobierno local",h:"🏘️ Portal 2: Nuestra comunidad",x:"La <b>municipalidad</b> es el gobierno local de un cantón. En la época colonial, el <b>cabildo</b> cumplía funciones de gobierno local.",e:"Dos épocas distintas: hoy → municipalidad · época colonial → cabildo."},
+{t:"Gobierno local",s:"municipalidad",n:"guiado",story:"🏘️ En el presente, una comunidad necesita atender asuntos propios de su cantón.",q:"¿Cuál institución corresponde al gobierno local del cantón?",a:["Municipalidad","Asamblea Legislativa","Poder Judicial","Ministerio de Educación"],k:0},
+{t:"Gobierno local",s:"cabildo",n:"aplicacion",story:"⏳ El portal te lleva a una población de la época colonial.",q:"¿Qué institución ejercía funciones de gobierno local en esa época?",a:["Municipalidad actual","Cabildo","Tribunal Supremo de Elecciones","Defensoría"],k:1},
+
+{l:1,t:"Historia",h:"⚔️ Portal 3: Campaña Nacional",x:"En 1856 Costa Rica enfrentó a los filibusteros. La <b>Batalla de Santa Rosa</b> ocurrió en territorio costarricense. Después, la <b>Batalla de Rivas</b> ocurrió en Nicaragua.",e:"Una pista para ordenar el viaje: Santa Rosa → Costa Rica; Rivas → Nicaragua."},
+{t:"Historia",s:"Santa Rosa",n:"guiado",story:"📜 Estás reconstruyendo los acontecimientos de 1856.",q:"¿Cuál batalla de la Campaña Nacional ocurrió en territorio costarricense?",a:["Rivas","Santa Rosa","Boyacá","Ayacucho"],k:1},
+{t:"Historia",s:"Rivas",n:"aplicacion",story:"⚔️ El ejército costarricense continuó su avance hacia Nicaragua.",q:"¿Qué batalla importante se libró en Nicaragua durante esa campaña?",a:["Santa Rosa","Ochomogo","Rivas","Cartago"],k:2},
+{t:"Historia",s:"secuencia",n:"aplicacion",story:"⏳ Debes ordenar dos momentos de la Campaña Nacional.",q:"¿Cuál secuencia es correcta?",a:["Rivas → Santa Rosa","Santa Rosa → Rivas","Rivas → Independencia","Independencia → Santa Rosa en 1821"],k:1},
+
+{t:"Ciudadanía",s:"participación",n:"transferencia",story:"🤝 De vuelta al presente, una comunidad quiere mejorar un parque y conversa para buscar soluciones.",q:"¿Qué acción muestra mejor una participación responsable en la comunidad?",a:["Ignorar el problema","Dañar el parque","Participar y proponer soluciones","Esperar que otra persona resuelva todo"],k:2},
+{t:"Geografía",s:"lectura-contexto",n:"transferencia",story:"🌾 Una familia cultiva en una zona extensa y plana, adecuada para trabajar grandes áreas de terreno.",q:"Según la descripción, ¿qué relieve es más probable encontrar?",a:["Cordillera","Llanura","Valle muy estrecho","Cima montañosa"],k:1},
+{t:"Gobierno local",s:"tiempo-historico",n:"transferencia",story:"🕰️ Dos tarjetas se mezclaron: una dice «cabildo» y otra «municipalidad».",q:"¿Cuál relación temporal es correcta?",a:["Cabildo: presente · Municipalidad: colonia","Ambas pertenecen solo a la colonia","Cabildo: colonia · Municipalidad: presente","Ninguna se relaciona con gobierno local"],k:2},
+{t:"Historia",s:"contexto-campaña",n:"tipo_mep_gradual",story:"📖 Una estudiante lee sobre la lucha costarricense contra los filibusteros en 1856 y encuentra referencias a Santa Rosa y Rivas.",q:"¿Con cuál proceso histórico se relacionan principalmente esos acontecimientos?",a:["La Independencia de 1821","La Campaña Nacional de 1856-1857","La conquista española","La creación de la Segunda República"],k:1}
+];
+let i=0,R={},T,report;
+function start(){T=Date.now();intro.classList.add("hide");game.classList.remove("hide");render()}
+function render(){let z=A[i];step.textContent=`Portal ${i+1} de ${A.length}`;bar.style.width=((i+1)/A.length*100)+"%";
+box.innerHTML=z.l?`<h2>${z.h}</h2><div class="memory">${z.x}</div><div class="story"><b>✨ Pista visual:</b> ${z.e}</div>`:
+`<span class="tag">${z.t}</span><div class="story">${z.story}</div><div class="q">${z.q}</div><div class="opts">${z.a.map((x,j)=>`<label class="op"><input type="radio" name="r" ${R[i]===j?"checked":""} onchange="R[${i}]=${j}">${x}</label>`).join("")}</div>`;
+prev.style.visibility=i?"visible":"hidden";nextBtn.textContent=i===A.length-1?"Cerrar el portal ✨":"Siguiente →"}
+function forward(){if(!A[i].l&&R[i]===undefined){alert("Elige la respuesta que te parezca mejor. Lee con calma y confía en lo que recuerdas 💜");return}if(i<A.length-1){i++;render()}else finish()}
+function back(){if(i){i--;render()}}
+function finish(){let d=[];A.forEach((z,j)=>{if(!z.l)d.push({paso:j+1,tema:z.t,habilidad:z.s,nivel_consiga:z.n,pregunta:z.q,respuesta:z.a[R[j]],clave:z.a[z.k],correcta:R[j]===z.k})});
+let temas={};d.forEach(x=>{temas[x.tema]??={correctas:0,total:0};temas[x.tema].total++;if(x.correcta)temas[x.tema].correctas++});
+report={fecha:new Date().toLocaleString("es-CR"),mision:"Estudios Sociales - El Portal del Tiempo",tipo:"entrenamiento_recuperacion_sin_nota",duracion_min:Math.round((Date.now()-T)/60000),temas,detalle:d};
+game.classList.add("hide");end.classList.remove("hide");powers.innerHTML=Object.entries(temas).map(([t,v])=>`<div class="power">✨ <b>${t}</b><br>${v.correctas===v.total?"Recuerdo recuperado 🌟":v.correctas>=v.total/2?"El recuerdo está despertando 💜":"Volveremos a visitarlo con calma 🧩"}</div>`).join("")}
+function save(){let b=new Blob([JSON.stringify(report,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="resultado_entrenamiento_sociales_01.json";a.click()}
+</script></body></html>
